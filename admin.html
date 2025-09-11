@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Configuration</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            margin: 0;
+            background-color: #f0f2f5;
+            color: #333;
+            display: flex; /* For password prompt centering if needed */
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .admin-layout {
+            display: flex;
+            width: 100%;
+            height: 100vh;
+            background-color: #fff;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+
+        #sideNav {
+            width: 240px;
+            background-color: #2c3e50; /* Darker sidebar */
+            color: #ecf0f1;
+            padding: 20px 0;
+            height: 100%;
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+
+        #sideNav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        #sideNav li a {
+            display: block;
+            color: #ecf0f1;
+            padding: 12px 20px;
+            text-decoration: none;
+            font-size: 15px;
+            border-left: 3px solid transparent;
+            transition: background-color 0.2s ease, border-left-color 0.2s ease;
+        }
+
+        #sideNav li a:hover {
+            background-color: #34495e;
+        }
+
+        #sideNav li a.active {
+            background-color: #1abc9c; /* Accent color for active */
+            color: #fff;
+            font-weight: 500;
+            border-left-color: #16a085; /* Slightly darker accent */
+        }
+
+        #contentPanels {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            background-color: #f9fafb; /* Lighter content background */
+            display: flex; /* Use flexbox for layout */
+            flex-direction: column; /* Stack children vertically */
+        }
+
+        #contentPanels h1 {
+            color: #2c3e50;
+            margin-top: 0;
+            margin-bottom: 25px;
+            font-size: 24px;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 15px;
+            flex-shrink: 0; /* Prevent header from shrinking */
+        }
+
+        #configForm {
+             flex-grow: 1; /* Allow form to take remaining space */
+             display: flex;
+             flex-direction: column;
+        }
+
+        .content-panel-container {
+             flex-grow: 1; /* Allow panels container to grow */
+             overflow-y: auto; /* Add scroll to panels if needed, separate from main area */
+             margin-bottom: 20px; /* Space before save area */
+        }
+
+
+        .content-panel {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .content-panel.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .content-panel h2 { /* Replaces fieldset legend */
+            font-size: 20px;
+            color: #34495e;
+            margin-top: 0;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eaeaea;
+        }
+
+        /* Form element styling */
+        label {
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            font-weight: 500;
+            font-size: 14px;
+            color: #555;
+        }
+
+        input[type="text"],
+        input[type="url"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="date"],
+        textarea {
+            width: 100%; /* Full width within its container */
+            padding: 12px;
+            margin-top: 5px;
+            border: 1px solid #d1d5db; /* Softer border */
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 14px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        input[type="text"]:focus,
+        input[type="url"]:focus,
+        input[type="email"]:focus,
+        input[type="tel"]:focus,
+        input[type="date"]:focus,
+        textarea:focus {
+            border-color: #1abc9c;
+            box-shadow: 0 0 0 2px rgba(26, 188, 156, 0.2);
+            outline: none;
+        }
+
+
+        textarea { min-height: 100px; resize: vertical; }
+
+        .save-area {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+            flex-shrink: 0; /* Prevent save area from shrinking */
+        }
+
+        button[type="submit"] {
+            background-color: #1abc9c; /* Primary action color */
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            /* margin-top removed, handled by save-area */
+            transition: background-color 0.2s ease;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #16a085; /* Darker shade on hover */
+        }
+
+        .hidden { display: none !important; } /* Ensure password protection works */
+
+        .form-group { margin-bottom: 20px; }
+
+        .bundle-item, .modal-question-group {
+            border: 1px solid #e0e0e0; /* Softer border */
+            background-color: #fff;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+        }
+        .bundle-item h4, .modal-question-group h4 { /* Sub-section titles */
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 16px;
+            color: #2c3e50;
+        }
+
+        .modal-option-group {
+            padding-left: 20px;
+            margin-top: 10px;
+            border-left: 3px solid #1abc9c; /* Accent border */
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
+
+        #message {
+            margin-top: 20px;
+            padding: 12px 15px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        .success { background-color: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+        .error { background-color: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+
+        /* Nested fieldset for social media */
+        fieldset {
+            border: 1px solid #e0e0e0;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 6px;
+            background-color: #fff;
+        }
+        legend {
+            font-weight: 500;
+            font-size: 16px;
+            padding: 0 10px;
+            color: #2c3e50;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="admin-layout hidden" id="adminLayout">
+        <nav id="sideNav">
+            <ul>
+                <li><a href="#" data-target="propertySection" class="active">Property Details</a></li>
+                <li><a href="#" data-target="realtorSection">Realtor Details</a></li>
+                <li><a href="#" data-target="brokerageSection">Brokerage Details</a></li>
+                <li><a href="#" data-target="bundleItemsSection">Open House Items</a></li>
+                <li><a href="#" data-target="metaSection">Meta/Site Info</a></li>
+                <li><a href="#" data-target="settingsSection">Settings</a></li>
+                <li><a href="#" data-target="modalQuestionsSection">Modal Questions</a></li>
+                <li><a href="#" data-target="deploymentSection">Deployment Info</a></li>
+            </ul>
+        </nav>
+        <main id="contentPanels">
+            <h1>Admin Configuration</h1>
+            <form id="configForm">
+                <div class="content-panel-container"> <!-- Wrapper for scrollable panels -->
+                    <!-- Property Details -->
+                    <div id="propertySection" class="content-panel active">
+                        <h2>Property Details</h2>
+                        <div class="form-group">
+                            <label for="streetAddress">Street Address:</label>
+                            <input type="text" id="streetAddress" name="streetAddress">
+                        </div>
+                        <div class="form-group">
+                            <label for="city">City:</label>
+                            <input type="text" id="city" name="city">
+                        </div>
+                        <div class="form-group">
+                            <label for="cityStateZip">City, State/Province Zip/Postal:</label>
+                            <input type="text" id="cityStateZip" name="cityStateZip">
+                        </div>
+                        <div class="form-group">
+                            <label for="heroSubtitle">Hero Subtitle:</label>
+                            <textarea id="heroSubtitle" name="heroSubtitle"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="backgroundImageUrl">Background Image URL:</label>
+                            <input type="url" id="backgroundImageUrl" name="backgroundImageUrl">
+                        </div>
+                        <!-- Removed unused property fields -->
+                    </div>
+
+                    <!-- Realtor Details -->
+                    <div id="realtorSection" class="content-panel">
+                        <h2>Realtor Details</h2>
+                        <div class="form-group">
+                            <label for="realtorFullName">Full Name:</label>
+                            <input type="text" id="realtorFullName" name="realtorFullName">
+                        </div>
+                        <!-- Removed realtorFirstName -->
+                        <div class="form-group">
+                            <label for="realtorTitle">Title:</label>
+                            <input type="text" id="realtorTitle" name="realtorTitle">
+                        </div>
+                        <div class="form-group">
+                            <label for="realtorPhone">Phone:</label>
+                            <input type="tel" id="realtorPhone" name="realtorPhone">
+                        </div>
+                        <div class="form-group">
+                            <label for="realtorEmail">Email:</label>
+                            <input type="email" id="realtorEmail" name="realtorEmail">
+                        </div>
+                        <div class="form-group">
+                            <label for="realtorBio">Bio:</label>
+                            <textarea id="realtorBio" name="realtorBio"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="realtorPhotoUrl">Photo URL:</label>
+                            <input type="url" id="realtorPhotoUrl" name="realtorPhotoUrl">
+                        </div>
+                        <fieldset>
+                            <legend>Social Media</legend>
+                            <div class="form-group">
+                                <label for="socialFacebook">Facebook URL:</label>
+                                <input type="url" id="socialFacebook" name="socialFacebook">
+                            </div>
+                            <div class="form-group">
+                                <label for="socialInstagram">Instagram URL:</label>
+                                <input type="url" id="socialInstagram" name="socialInstagram">
+                            </div>
+                            <div class="form-group">
+                                <label for="socialWebsite">Website URL:</label>
+                                <input type="url" id="socialWebsite" name="socialWebsite">
+                            </div>
+                        </fieldset>
+                    </div>
+
+                    <!-- Brokerage Details -->
+                    <div id="brokerageSection" class="content-panel">
+                        <h2>Brokerage Details</h2>
+                        <div class="form-group">
+                            <label for="brokerageName">Name:</label>
+                            <input type="text" id="brokerageName" name="brokerageName">
+                        </div>
+                        <div class="form-group">
+                            <label for="brokerageLogoUrl">Logo URL:</label>
+                            <input type="url" id="brokerageLogoUrl" name="brokerageLogoUrl">
+                        </div>
+                        <div class="form-group">
+                            <label for="brokerageAddress">Address:</label>
+                            <input type="text" id="brokerageAddress" name="brokerageAddress">
+                        </div>
+                    </div>
+
+                    <!-- Open House Bundle Items -->
+                    <div id="bundleItemsSection" class="content-panel">
+                        <h2>Open House Bundle Items (Max 8)</h2>
+                        <div id="bundleItemsContainer">
+                            <!-- JavaScript will populate this -->
+                        </div>
+                    </div>
+
+                    <!-- Meta Information -->
+                    <div id="metaSection" class="content-panel">
+                        <h2>Meta/Site Information</h2>
+                        <div class="form-group">
+                            <label for="metaPageTitlePrefix">Page Title Prefix:</label>
+                            <input type="text" id="metaPageTitlePrefix" name="metaPageTitlePrefix">
+                        </div>
+                        <div class="form-group">
+                            <label for="metaNavBrandLogoText">Navigation Brand/Logo Text:</label>
+                            <input type="text" id="metaNavBrandLogoText" name="metaNavBrandLogoText">
+                        </div>
+                        <div class="form-group">
+                            <label for="metaPrivacyPolicyLink">Privacy Policy Link:</label>
+                            <input type="url" id="metaPrivacyPolicyLink" name="metaPrivacyPolicyLink">
+                        </div>
+                        <!-- Removed metaTermsLink -->
+                    </div>
+
+                    <!-- Settings -->
+                    <div id="settingsSection" class="content-panel">
+                        <h2>Settings</h2>
+                        <div class="form-group">
+                            <label for="settingsWebhookUrl">Webhook URL (read-only):</label>
+                            <input type="url" id="settingsWebhookUrl" name="settingsWebhookUrl" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="settingsConfettiColors">Confetti Colors (hex codes, one per line):</label>
+                            <textarea id="settingsConfettiColors" name="settingsConfettiColors"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Modal Questions -->
+                    <div id="modalQuestionsSection" class="content-panel">
+                        <h2>Modal Questions (First 4 Questions, Max 4 Options Each)</h2>
+                        <div id="modalQuestionsContainer">
+                            <!-- JavaScript will populate this -->
+                        </div>
+                    </div>
+
+                    <!-- Deployment Info -->
+                    <div id="deploymentSection" class="content-panel">
+                        <h2>Deployment Info</h2>
+                        <div class="form-group">
+                            <label for="deploymentNetlifyUrl">Webhook URL (GHL):</label>
+                            <input type="url" id="deploymentNetlifyUrl" name="deploymentNetlifyUrl">
+                        </div>
+                        <div class="form-group">
+                            <label for="deploymentTag">CRM Tag:</label>
+                            <input type="text" id="deploymentTag" name="deploymentTag">
+                        </div>
+                        <div class="form-group">
+                            <label for="deploymentRepoName">Repo Name:</label>
+                            <input type="text" id="deploymentRepoName" name="deploymentRepoName" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="deploymentRepoUrl">Repo URL:</label>
+                            <input type="url" id="deploymentRepoUrl" name="deploymentRepoUrl" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="deploymentNetlifyId">Netlify ID:</label>
+                            <input type="text" id="deploymentNetlifyId" name="deploymentNetlifyId" readonly>
+                        </div>
+                    </div>
+                </div> <!-- End content-panel-container -->
+
+                <div class="save-area"> <!-- Moved Save Button and Message Area Here -->
+                    <button type="submit">Save Configuration</button>
+                    <div id="message"></div>
+                </div>
+            </form>
+        </main>
+    </div>
+
+    <!-- Load config first -->
+    <script src="config.js"></script>
+    <script>
+        // Config object is now loaded from config.js
+
+        const adminLayout = document.getElementById('adminLayout');
+        const configForm = document.getElementById('configForm');
+        const messageDiv = document.getElementById('message');
+
+        function getVal(id) {
+            const el = document.getElementById(id);
+            return el ? el.value : '';
+        }
+
+        function setVal(id, value) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.value = value === undefined || value === null ? '' : value;
+            }
+        }
+
+        function populateForm() {
+            const c = config; // Use config from config.js
+            // Property
+            setVal('streetAddress', c.property.streetAddress);
+            setVal('city', c.property.city);
+            setVal('cityStateZip', c.property.cityStateZip);
+            setVal('heroSubtitle', c.property.heroSubtitle);
+            setVal('backgroundImageUrl', c.property.backgroundImageUrl);
+            // Removed setVal for unused property fields
+
+            // Realtor
+            setVal('realtorFullName', c.realtor.fullName);
+            // Removed setVal for realtorFirstName
+            setVal('realtorTitle', c.realtor.title);
+            setVal('realtorPhone', c.realtor.phone);
+            setVal('realtorEmail', c.realtor.email);
+            setVal('realtorBio', c.realtor.bio);
+            setVal('realtorPhotoUrl', c.realtor.photoUrl);
+            setVal('socialFacebook', c.realtor.social.facebook);
+            setVal('socialInstagram', c.realtor.social.instagram);
+            setVal('socialWebsite', c.realtor.social.website);
+
+            // Brokerage
+            setVal('brokerageName', c.brokerage.name);
+            setVal('brokerageLogoUrl', c.brokerage.logoUrl);
+            setVal('brokerageAddress', c.brokerage.address);
+
+            // Meta
+            setVal('metaPageTitlePrefix', c.meta.pageTitlePrefix);
+            setVal('metaNavBrandLogoText', c.meta.navBrandLogoText);
+            setVal('metaPrivacyPolicyLink', c.meta.privacyPolicyLink);
+            // Removed setVal for metaTermsLink
+
+            // Settings
+            setVal('settingsWebhookUrl', c.settings.adminWebhookUrl); // Use adminWebhookUrl
+            setVal('settingsConfettiColors', c.settings.confettiColors.join('\n'));
+
+            // Open House Bundle Items (Max 8)
+            const bundleItemsContainer = document.getElementById('bundleItemsContainer');
+            bundleItemsContainer.innerHTML = ''; // Clear previous
+            for (let i = 0; i < 8; i++) {
+                const item = c.openHouse.bundleItems[i] || {};
+                const div = document.createElement('div');
+                div.className = 'bundle-item';
+                div.innerHTML = `
+                    <h4>Bundle Item ${i + 1}</h4>
+                    <div class="form-group">
+                        <label for="bundleIcon${i}">Icon (e.g., fas fa-star):</label>
+                        <input type="text" id="bundleIcon${i}" value="${item.icon || ''}">
+                    </div>
+                    <div class="form-group">
+                        <label for="bundleText${i}">Text:</label>
+                        <input type="text" id="bundleText${i}" value="${item.text || ''}">
+                    </div>
+                    <!-- Removed bundleLink input -->
+                `;
+                bundleItemsContainer.appendChild(div);
+            }
+
+            // Modal Questions (First 2 questions, max 4 options each)
+            const modalQuestionsContainer = document.getElementById('modalQuestionsContainer');
+            modalQuestionsContainer.innerHTML = ''; // Clear previous
+            for (let i = 0; i < 4; i++) { // Max 4 questions
+                const question = c.modalQuestions[i];
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'modal-question-group';
+                let optionsHTML = '';
+                for (let j = 0; j < 4; j++) { // Max 4 options
+                    const option = question && question.options && question.options[j] ? question.options[j] : {};
+                    optionsHTML += `
+                        <div class="modal-option-group">
+                            <label for="modalQ${i}OptionText${j}">Option ${j + 1} Text:</label>
+                            <input type="text" id="modalQ${i}OptionText${j}" value="${option.text || ''}">
+                        </div>
+                    `;
+                }
+                questionDiv.innerHTML = `
+                    <h4>Modal Question ${i + 1}</h4>
+                    <div class="form-group">
+                        <label for="modalQ${i}Text">Question Text:</label>
+                        <input type="text" id="modalQ${i}Text" value="${question ? question.questionText : ''}">
+                    </div>
+                    ${optionsHTML}
+                `;
+                // Only add if question exists in config or it's the first placeholder
+                if (question || (i < 4 && c.modalQuestions.length <= i) ) {
+                    modalQuestionsContainer.appendChild(questionDiv);
+                }
+            }
+
+            // Deployment Info (Read-Only)
+            if (c.deploymentInfo) {
+                setVal('deploymentRepoName', c.deploymentInfo.repoName);
+                setVal('deploymentRepoUrl', c.deploymentInfo.repoUrl);
+                setVal('deploymentTag', c.deploymentInfo.tag);
+                setVal('deploymentNetlifyUrl', c.deploymentInfo.netlifyUrl);
+                setVal('deploymentNetlifyId', c.deploymentInfo.netlifyId);
+            }
+        }
+
+        function arrayFromTextarea(id) {
+            const val = getVal(id);
+            return val.split('\n').map(s => s.trim()).filter(s => s !== '');
+        }
+
+        async function handleFormSubmit(event) {
+            event.preventDefault();
+            messageDiv.textContent = '';
+            messageDiv.className = '';
+
+            // Start with a deep clone of the *current* config from config.js
+            // This ensures we only send fields that are actually defined in the lean config
+            const updatedConfig = JSON.parse(JSON.stringify(config));
+
+            // --- Update only the fields present in the lean config ---
+
+            // Property
+            if (updatedConfig.property.hasOwnProperty('streetAddress')) updatedConfig.property.streetAddress = getVal('streetAddress');
+            if (updatedConfig.property.hasOwnProperty('city')) updatedConfig.property.city = getVal('city');
+            if (updatedConfig.property.hasOwnProperty('cityStateZip')) updatedConfig.property.cityStateZip = getVal('cityStateZip');
+            if (updatedConfig.property.hasOwnProperty('heroSubtitle')) updatedConfig.property.heroSubtitle = getVal('heroSubtitle');
+            if (updatedConfig.property.hasOwnProperty('backgroundImageUrl')) updatedConfig.property.backgroundImageUrl = getVal('backgroundImageUrl');
+
+            // Realtor
+            if (updatedConfig.realtor.hasOwnProperty('fullName')) updatedConfig.realtor.fullName = getVal('realtorFullName');
+            if (updatedConfig.realtor.hasOwnProperty('title')) updatedConfig.realtor.title = getVal('realtorTitle');
+            if (updatedConfig.realtor.hasOwnProperty('phone')) updatedConfig.realtor.phone = getVal('realtorPhone');
+            if (updatedConfig.realtor.hasOwnProperty('email')) updatedConfig.realtor.email = getVal('realtorEmail');
+            if (updatedConfig.realtor.hasOwnProperty('bio')) updatedConfig.realtor.bio = getVal('realtorBio');
+            if (updatedConfig.realtor.hasOwnProperty('photoUrl')) updatedConfig.realtor.photoUrl = getVal('realtorPhotoUrl');
+            if (updatedConfig.realtor.hasOwnProperty('social')) {
+                 if (updatedConfig.realtor.social.hasOwnProperty('facebook')) updatedConfig.realtor.social.facebook = getVal('socialFacebook');
+                 if (updatedConfig.realtor.social.hasOwnProperty('instagram')) updatedConfig.realtor.social.instagram = getVal('socialInstagram');
+                 if (updatedConfig.realtor.social.hasOwnProperty('website')) updatedConfig.realtor.social.website = getVal('socialWebsite');
+            }
+
+            // Brokerage
+            if (updatedConfig.brokerage.hasOwnProperty('name')) updatedConfig.brokerage.name = getVal('brokerageName');
+            if (updatedConfig.brokerage.hasOwnProperty('logoUrl')) updatedConfig.brokerage.logoUrl = getVal('brokerageLogoUrl');
+            if (updatedConfig.brokerage.hasOwnProperty('address')) updatedConfig.brokerage.address = getVal('brokerageAddress');
+
+            // Meta
+            if (updatedConfig.meta.hasOwnProperty('pageTitlePrefix')) updatedConfig.meta.pageTitlePrefix = getVal('metaPageTitlePrefix');
+            if (updatedConfig.meta.hasOwnProperty('navBrandLogoText')) updatedConfig.meta.navBrandLogoText = getVal('metaNavBrandLogoText');
+            if (updatedConfig.meta.hasOwnProperty('privacyPolicyLink')) updatedConfig.meta.privacyPolicyLink = getVal('metaPrivacyPolicyLink');
+
+            // Settings
+            // webhookUrl is readonly
+            if (updatedConfig.settings.hasOwnProperty('confettiColors')) updatedConfig.settings.confettiColors = arrayFromTextarea('settingsConfettiColors');
+// Deployment Info
+            if (updatedConfig.hasOwnProperty('deploymentInfo') && updatedConfig.deploymentInfo) {
+                // Update editable fields from form
+                // Always attempt to set netlifyUrl and tag from the form if deploymentInfo exists
+                updatedConfig.deploymentInfo.netlifyUrl = getVal('deploymentNetlifyUrl');
+                updatedConfig.deploymentInfo.tag = getVal('deploymentTag');
+                // Readonly fields (deploymentRepoName, deploymentRepoUrl, deploymentNetlifyId)
+                // are preserved in updatedConfig.deploymentInfo from the initial clone of 'config'
+                // if they were present in the original config.deploymentInfo.
+            }
+
+            // Open House Bundle Items
+            if (updatedConfig.openHouse.hasOwnProperty('bundleItems')) {
+                updatedConfig.openHouse.bundleItems = [];
+                for (let i = 0; i < 8; i++) {
+                    const icon = getVal(`bundleIcon${i}`);
+                    const text = getVal(`bundleText${i}`);
+                    // Link field removed
+                    if (icon || text) { // Only add if icon or text has a value
+                        const newItem = { icon, text };
+                        // Note: nested comparables are not part of the lean config, so not preserved here
+                        updatedConfig.openHouse.bundleItems.push(newItem);
+                    }
+                }
+            }
+
+            // Modal Questions
+            if (updatedConfig.hasOwnProperty('modalQuestions')) {
+                updatedConfig.modalQuestions = []; // Rebuild from scratch
+                for (let i = 0; i < 4; i++) {
+                    const questionText = getVal(`modalQ${i}Text`);
+                    if (questionText.trim() !== '') {
+                        // Use original ID if available, otherwise generate new one
+                        const originalQuestion = config.modalQuestions[i];
+                        const newQuestion = {
+                            id: originalQuestion ? originalQuestion.id : `new_question_${i}`,
+                            questionText: questionText,
+                            options: []
+                        };
+                        for (let j = 0; j < 4; j++) {
+                            const optionText = getVal(`modalQ${i}OptionText${j}`);
+                            if (optionText.trim() !== '') {
+                                // Use original value if available, otherwise generate new one
+                                const originalOption = originalQuestion && originalQuestion.options[j];
+                                newQuestion.options.push({
+                                    value: originalOption ? originalOption.value : `new_option_${i}_${j}`,
+                                    text: optionText
+                                });
+                            }
+                        }
+                        if (newQuestion.options.length > 0 || questionText.trim() !== '') {
+                             updatedConfig.modalQuestions.push(newQuestion);
+                        }
+                    }
+                }
+            }
+
+            console.log("Submitting updated config:", updatedConfig);
+
+            try {
+                // Use the adminWebhookUrl from the config for the fetch call
+                const adminUrl = updatedConfig.settings.adminWebhookUrl;
+                if (!adminUrl) {
+                    throw new Error("Admin webhook URL is not defined in config.js settings.");
+                }
+                const response = await fetch(adminUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', },
+                    body: JSON.stringify(updatedConfig),
+                });
+
+                if (response.ok) {
+                    messageDiv.textContent = 'Open House configuration saved successfully! The new website is now deploying, It takes about 90 Seconds for you to see the changes, do not refresh the page. ';
+                    messageDiv.className = 'success';
+                    // We don't update the global 'config' object here anymore,
+                    // as the source of truth is now config.js, which n8n should update.
+                    // A page reload would be needed to see the changes reflected in the form.
+                } else {
+                    const errorData = await response.text();
+                    messageDiv.textContent = `Error saving configuration: ${response.status} ${errorData}`;
+                    messageDiv.className = 'error';
+                }
+            } catch (error) {
+                messageDiv.textContent = `Network error: ${error.message}`;
+                messageDiv.className = 'error';
+            }
+        }
+
+        function initSideNav() {
+            const navLinks = document.querySelectorAll('#sideNav a');
+            const contentPanels = document.querySelectorAll('.content-panel');
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (event) => {
+                    event.preventDefault();
+
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    link.classList.add('active');
+
+                    const targetId = link.getAttribute('data-target');
+                    contentPanels.forEach(panel => {
+                        if (panel.id === targetId) {
+                            panel.classList.add('active');
+                        } else {
+                            panel.classList.remove('active');
+                        }
+                    });
+                });
+            });
+            // Ensure the first tab is active on load
+            if (navLinks.length > 0) {
+                navLinks[0].click();
+            }
+        }
+
+        function init() {
+            const password = prompt("Enter password to access admin page:", "");
+            if (password === "123456") {
+                // Check if config object loaded correctly
+                if (typeof config === 'undefined') {
+                     alert("Error: Configuration file (config.js) failed to load. Cannot initialize admin page.");
+                     document.body.innerHTML = '<p style="color:red; text-align:center; margin-top: 50px; font-size:18px; width:100%;">Configuration Error</p>';
+                     return;
+                }
+
+                document.body.style.justifyContent = 'flex-start'; // Reset body alignment
+                document.body.style.alignItems = 'flex-start';
+                adminLayout.classList.remove('hidden');
+                populateForm();
+                initSideNav(); // Initialize side navigation
+                configForm.addEventListener('submit', handleFormSubmit);
+            } else {
+                alert("Incorrect password. Access denied.");
+                document.body.innerHTML = '<p style="color:red; text-align:center; margin-top: 50px; font-size:18px; width:100%;">Access Denied</p>';
+            }
+        }
+
+        init();
+    </script>
+</body>
+</html>
