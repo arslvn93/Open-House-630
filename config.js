@@ -29,7 +29,7 @@ const config = {
     "bundleItems": [
       {
         "icon": "fas fa-globe",
-        "text": "Property Listing URL"
+        "text": "Property Listing Details upon Sign Up"
       }
     ]
   },
