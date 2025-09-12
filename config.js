@@ -15,7 +15,7 @@ const config = {
     "photoUrl": "https://iss-cdn.myrealpage.com/lA7c_sP92jMRuxXS68HVMFUPfzbCOT0xDEDMBax7tnk/rs:auto:0:0:0/g:sm/bG9jYWw6Ly8vZGF0YS9hcHAvd3BzL3QvaC9lL2QvdGhlZHJpc2NvbGxwZWNhcmVhbGVzdGF0ZXRlYW0ubXlyZWFscGFnZXdlYnNpdGUuY29tL19tZWRpYS8xMS0xNS5wbmc_dD0xNzQ3NDk0NTAyNDEx?t=1747494502411",
     "social": {
       "facebook": "https://www.facebook.com/driscollpecateam",
-      "instagram": "https://instagram.com/ae.parks",
+      "instagram": "https://instagram.com/driscollpecateam",
       "website": "https://driscollpeca.com/"
     }
   },
