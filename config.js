@@ -8,7 +8,7 @@ const config = {
   },
   "realtor": {
     "fullName": "Melissa from the Driscoll-Peca Team",
-    "title": " ",
+    "title": " Realtor",
     "phone": "(613) 706-1616",
     "email": "melissa@driscollpeca.com",
     "bio": "Servicing Ottawa and the surrounding areas. With years of real estate service under our belt, we can assure you that you are in good hands with our team. We are committed to listening to our clients, focusing on their needs and using keen negotiating skills to ensure a successful transaction for both buyers and sellers. With deep local knowledge and a true passion for real estate, we're committed to helping you find the perfect place to call home. Let's make your next move an exciting and rewarding one — we can't wait to work with you!",
