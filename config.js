@@ -11,8 +11,8 @@ const config = {
     "title": " Realtor",
     "phone": "(613) 706-1616",
     "email": "nicole@driscollpeca.com",
-    "bio": "Servicing Ottawa and the surrounding areas. With years of real estate service under our belt, we can assure you that you are in good hands with our team. We are committed to listening to our clients, focusing on their needs and using keen negotiating skills to ensure a successful transaction for both buyers and sellers. With deep local knowledge and a true passion for real estate, we're committed to helping you find the perfect place to call home. Let's make your next move an exciting and rewarding one — we can't wait to work with you!",
-    "photoUrl": "https://cdn.realtor.ca/individual/TS638519161800000000/highres/1462617.jpg",
+    "bio": "Nicole is originally from Carleton Place, and has proudly called Kemptville home for the past five years. With a strong background in real estate administration and now as a licensed agent, she combines professional expertise with a genuine passion for helping people.\n\nAs a mother of three, she understands the importance of finding not just a house, but a home that truly fits a family’s needs. She is dedicated to guiding buyers and sellers in Kemptville and the surrounding areas through every step of the market with confidence and care",
+    "photoUrl": "https://i.ibb.co/yBgLYvGT/Agent-Headshots-8.png",
     "social": {
       "facebook": "https://www.facebook.com/driscollpecateam",
       "instagram": "https://instagram.com/driscollpecateam",
