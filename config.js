@@ -11,8 +11,8 @@ const config = {
     "title": " Realtor",
     "phone": "(613) 706-1616",
     "email": "nicole@driscollpeca.com",
-    "bio": "Nicole is originally from Carleton Place, and has proudly called Kemptville home for the past five years. With a strong background in real estate administration and now as a licensed agent, she combines professional expertise with a genuine passion for helping people.\n\nAs a mother of three, she understands the importance of finding not just a house, but a home that truly fits a family’s needs. She is dedicated to guiding buyers and sellers in Kemptville and the surrounding areas through every step of the market with confidence and care",
-    "photoUrl": "https://i.ibb.co/yBgLYvGT/Agent-Headshots-8.png",
+    "bio": "Born and raised in Carleton Place, Melissa brings both deep local roots and unmatched dedication to her work. As a busy mom of three and proud dog mom to her two Goldens, Honey and Toby, she knows the true meaning of commitment, balance, and hard work. Her energy, drive, and passion for helping clients shine through in everything she does. \n\nWhether buying or selling, you can count on Melissa to go above and beyond to deliver results - she’s one of the hardest-working agents you’ll ever meet, and the team couldn’t be more thrilled to have her on board!",
+    "photoUrl": "https://i.ibb.co/MDBJCKhv/Agent-Headshots.png",
     "social": {
       "facebook": "https://www.facebook.com/driscollpecateam",
       "instagram": "https://instagram.com/driscollpecateam",
