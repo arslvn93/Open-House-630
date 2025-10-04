@@ -7,10 +7,10 @@ const config = {
     "backgroundImageUrl": "https://api.typeform.com/responses/files/edeb7bf401b539b168e4805e5500a2cf24e62c61e637c0f096732e81bf2d32af/1_web_or_mls_1_print_1_web_or_mls_DSC07144_2_twilight_4f0254af_3268_4b9a_a291_78cd45d26e75.jpg"
   },
   "realtor": {
-    "fullName": "Nicole from the Driscoll-Peca Team",
+    "fullName": "Melissa from the Driscoll-Peca Team",
     "title": " Realtor",
-    "phone": "(613) 706-1616",
-    "email": "nicole@driscollpeca.com",
+    "phone": "(613) 706-1731",
+    "email": "melissa@driscollpeca.com",
     "bio": "Born and raised in Carleton Place, Melissa brings both deep local roots and unmatched dedication to her work. As a busy mom of three and proud dog mom to her two Goldens, Honey and Toby, she knows the true meaning of commitment, balance, and hard work. Her energy, drive, and passion for helping clients shine through in everything she does. \n\nWhether buying or selling, you can count on Melissa to go above and beyond to deliver results - she’s one of the hardest-working agents you’ll ever meet, and the team couldn’t be more thrilled to have her on board!",
     "photoUrl": "https://i.ibb.co/MDBJCKhv/Agent-Headshots.png",
     "social": {
